@@ -18,11 +18,13 @@ func cleanInput(input string) []string {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func() error
+	callback    func(*config) error
 }
 
 type config struct {
-	pokeApiClient pokeapi.Client
+	pokeapiClient    pokeapi.Client
+	nextLocationsURL *string
+	prevLocationsURL *string
 }
 
 func getCommand() map[string]cliCommand {
@@ -39,13 +41,18 @@ func getCommand() map[string]cliCommand {
 		},
 		"map": {
 			name:        "map",
-			description: "Show the command map",
-			callback:    commandMap,
+			description: "Show next 20 locations in the Pokedex",
+			callback:    commandMapf,
+		},
+		"mapb": {
+			name:        "mapb",
+			description: "Show previous 20 locations in the Pokedex",
+			callback:    commandMapb,
 		},
 	}
 }
 
-func startRepl() {
+func startRepl(cfg *config) {
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Print("Pokedex >")
@@ -64,7 +71,7 @@ func startRepl() {
 			fmt.Printf("Unknown command: %s\n", cleaned[0])
 			continue
 		}
-		err := command.callback()
+		err := command.callback(cfg)
 		if err != nil {
 			fmt.Printf("Error executing command: %v\n", err)
 			continue
