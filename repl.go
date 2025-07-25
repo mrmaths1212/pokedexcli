@@ -3,9 +3,10 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"internal/pokeapi" // Assuming pokeapi is a package that provides the PokeAPI client
 	"os"
 	"strings"
+
+	"github.com/mrmaths1212/pokedexcli/internal/pokeapi"
 )
 
 func cleanInput(input string) []string {
